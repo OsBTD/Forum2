@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -40,7 +39,7 @@ type Post struct {
 	CreatedAt  time.Time
 	Likes      int
 	Dislikes   int
-	Categories sql.NullString
+	Categories []string
 	Comments   []Comment
 }
 
@@ -85,7 +84,7 @@ func buildPostsQuery(r *http.Request, userData auth.ContextUser) (string, []inte
 		args = append(args, userData.UserID)
 	}
 
-	//complete the query with grouping and ordering.
+	// complete the query with grouping and ordering.
 	baseQuery += " GROUP BY p.id ORDER BY p.created_at DESC"
 
 	return baseQuery, args
@@ -102,6 +101,8 @@ func fetchPosts(query string, args []interface{}) ([]Post, []int, error) {
 	var postIDs []int
 	for rows.Next() {
 		var post Post
+		var categoriesStr string
+
 		if err := rows.Scan(
 			&post.ID,
 			&post.Title,
@@ -110,10 +111,19 @@ func fetchPosts(query string, args []interface{}) ([]Post, []int, error) {
 			&post.Username,
 			&post.Likes,
 			&post.Dislikes,
-			&post.Categories,
+			&categoriesStr,
 		); err != nil {
 			return nil, nil, err
 		}
+		if categoriesStr != "" {
+			post.Categories = strings.Split(categoriesStr, ",")
+		} else {
+			post.Categories = []string{}
+		}
+
+		posts = append(posts, post)
+		postIDs = append(postIDs, post.ID)
+
 		posts = append(posts, post)
 		postIDs = append(postIDs, post.ID)
 	}
@@ -129,7 +139,7 @@ func fetchComments(postIDs []int) (map[int][]Comment, error) {
 		return make(map[int][]Comment), nil
 	}
 
-	//build a placeholder string (e.g., "?, ?, ?") for the SQL IN clause.
+	// build a placeholder string (e.g., "?, ?, ?") for the SQL IN clause.
 	placeholders := make([]string, len(postIDs))
 	args := make([]interface{}, len(postIDs))
 	for i, id := range postIDs {
@@ -156,7 +166,7 @@ func fetchComments(postIDs []int) (map[int][]Comment, error) {
 	for rows.Next() {
 		var c Comment
 		if err := rows.Scan(&c.ID, &c.PostID, &c.UserID, &c.Username, &c.Content, &c.CreatedAt, &c.Likes, &c.Dislikes); err != nil {
-			//log error and continue with other comments.
+			// log error and continue with other comments.
 			fmt.Println("Error at rows scan comment", err)
 			continue
 		}
@@ -217,7 +227,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		db.HandleError(w, http.StatusInternalServerError, "Error loading comments")
 		return
 	}
-	//attach loaded comments to the corresponding posts.
+	// attach loaded comments to the corresponding posts.
 	for i, post := range posts {
 		posts[i].Comments = commentsMap[post.ID]
 	}
@@ -230,7 +240,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	//prepare data for the template.
+	// prepare data for the template.
 	data := map[string]interface{}{
 		"Title":              "Home Page",
 		"LoggedIn":           userData.LoggedIn,
@@ -242,6 +252,6 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 		"FilterLiked":        r.URL.Query().Get("liked") == "1",
 	}
 
-	//render the home page template with the collected data.
+	// render the home page template with the collected data.
 	db.RenderTemplate(w, "home", data)
 }

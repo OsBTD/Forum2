@@ -69,7 +69,12 @@
             <span>Likes: {{ .Likes }}</span>
             <span>Dislikes: {{ .Dislikes }}</span>
             {{ if .Categories }}
-            | <span>Categories: {{ .Categories }}</span>
+            | <span>Categories:
+              {{ range $index, $cat := .Categories }}
+              {{ if $index }}, {{ end }}
+              {{ $cat }}
+              {{ end }}
+            </span>
             {{ end }}
           </div>
           <div class="post-actions">
