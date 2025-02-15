@@ -26,19 +26,21 @@
       </div>
     </div>
   </header>
+
   <main>
     <div class="content-container">
       <h1>Latest Posts</h1>
+
       <!-- Filter Form -->
       <form method="GET" action="/">
-        <div>
+        <div class="filter-group">
           <h3>Filter by Category:</h3>
           {{ range .FilterCategories }}
           <label>
             <input type="checkbox" name="category" value="{{ .ID }}" {{ if in $.SelectedCategories .ID }}checked{{ end
               }}>
             {{ .Name }}
-          </label><br>
+          </label>
           {{ end }}
         </div>
 
@@ -56,20 +58,22 @@
         <button type="submit">Filter</button>
       </form>
 
-      <!-- Posts List -->
+      <!-- Posts Container -->
       <div class="posts-container">
         {{ if .Posts }}
         {{ range .Posts }}
+        <!-- Individual Post -->
         <div class="post">
           <h2>{{ .Title }}</h2>
           <p>{{ .Content }}</p>
+
           <div class="post-meta">
-            <span>By: {{ .Username }}</span> |
-            <span>On: {{ .CreatedAt.Format "Jan 02, 2006" }}</span> |
+            <span>By: {{ .Username }}</span>
+            <span>On: {{ .CreatedAt.Format "Jan 02, 2006" }}</span>
             <span>Likes: {{ .Likes }}</span>
             <span>Dislikes: {{ .Dislikes }}</span>
             {{ if .Categories }}
-            | <span>Categories:
+            <span>Categories:
               {{ range $index, $cat := .Categories }}
               {{ if $index }}, {{ end }}
               {{ $cat }}
@@ -77,6 +81,7 @@
             </span>
             {{ end }}
           </div>
+
           <div class="post-actions">
             {{ if $.LoggedIn }}
             <a href="/like-post?id={{ .ID }}">Like</a>
@@ -86,6 +91,7 @@
             <a href="/login">Login to interact</a>
             {{ end }}
           </div>
+
           <!-- Comments Section -->
           <div class="comments">
             <h3>Comments</h3>
@@ -100,7 +106,6 @@
                 {{ if $.LoggedIn }}
                 <a href="/like-comment?id={{ .ID }}">Like</a>
                 <a href="/dislike-comment?id={{ .ID }}">Dislike</a>
-                <!-- </div> -->
                 {{ else }}
                 <span><a href="/login">Login to react</a></span>
                 {{ end }}
@@ -111,13 +116,17 @@
             <p>No comments yet.</p>
             {{ end }}
           </div>
-          {{ end }}
-          {{ else }}
+        </div> <!-- Close post div -->
+        {{ end }}
+        {{ else }}
+        <div class="post">
           <p>No posts available.</p>
-          {{ end }}
         </div>
+        {{ end }}
       </div>
+    </div>
   </main>
+
   <footer>
     <p>&copy; 2025 My Forum. All rights reserved.</p>
   </footer>
@@ -158,7 +167,6 @@
       });
     });
   </script>
-
 </body>
 
 </html>
