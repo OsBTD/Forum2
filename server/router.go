@@ -34,7 +34,6 @@ func NewRouter() *http.ServeMux {
 	router.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
 		subPath := strings.TrimPrefix(r.URL.Path, "/static/")
 		filePath := filepath.Join("static", subPath)
-
 		info, err := os.Stat(filePath)
 		if err != nil {
 			db.HandleError(w, http.StatusNotFound, "Page not found")
@@ -42,11 +41,6 @@ func NewRouter() *http.ServeMux {
 		}
 		if info.IsDir() {
 			db.HandleError(w, http.StatusForbidden, "Access is forbidden")
-			return
-		}
-
-		if strings.Contains(subPath, "..") || strings.Contains(subPath, "//") {
-			db.HandleError(w, http.StatusForbidden, "Invalid path pattern")
 			return
 		}
 
