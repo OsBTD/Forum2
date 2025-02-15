@@ -1,0 +1,57 @@
+<!-- add_post.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Title }}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <a href="/">My Forum</a>
+            </div>
+            <div class="nav-right">
+                {{ if .LoggedIn }}
+                    <span>Welcome, {{ .Username }}!</span>
+                    <a href="/logout">Logout</a>
+                {{ end }}
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="content-container">
+            <h2>Add New Post</h2>
+            <form action="/add-post" method="POST">
+                <div class="form-group">
+                    <label for="title">Title:</label>
+                    <input type="text" name="title" id="title" required>
+                    {{if .Error}}
+                    <div style="color: red;">{{.Error}}</div>
+                    {{end}}
+                </div>
+                <div class="form-group">
+                    <label for="content">Content:</label>
+                    <textarea name="content" id="content" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="categories">Categories:</label>
+                    <select name="categories" id="categories" multiple required>
+                        {{ range .Categories }}
+                            <option value="{{ .ID }}" {{ if in .ID $.SelectedCategories }}selected{{ end }}>{{ .Name }}</option>
+                        {{ end }}
+                    </select>
+                    <small>Hold Ctrl/Cmd to select multiple categories</small>
+                </div>
+                
+                <button type="submit">Submit Post</button>                
+            </form>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 My Forum. All rights reserved.</p>
+    </footer>
+</body>
+</html>

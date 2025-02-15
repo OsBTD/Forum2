@@ -1,0 +1,54 @@
+<!-- register.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Title }}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <a href="/">My Forum</a>
+            </div>
+            <div class="nav-right">
+                <a href="/login">Login</a>
+            </div>
+        </div>
+    </header>
+    <main>
+        <div class="content-container">
+            <h2>Register</h2>
+            <form action="/register" method="POST">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" id="username" required>
+                    {{if .Credentials.Error.Username}}
+                    <div style="color: red;">{{.Credentials.Error.Username}}</div>
+                    {{end}}
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" id="email" required>
+                    {{if .Credentials.Error.Email}}
+                    <div style="color: red;">{{.Credentials.Error.Email}}</div>
+                    {{end}}
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password" required>
+                    {{if .Credentials.Error.Password}}
+                    <div style="color: red;">{{.Credentials.Error.Password}}</div>
+                    {{end}}
+                </div>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2025 My Forum. All rights reserved.</p>
+    </footer>
+</body>
+</html>

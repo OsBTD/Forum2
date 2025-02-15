@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Title }}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <a href="/">My Forum</a>
+            </div>
+            <div class="nav-right">
+                {{ if .LoggedIn }}
+                <span>Welcome, {{ .Username }}!</span>
+                <a href="/add-post">New Post</a>
+                <a href="/logout">Logout</a>
+                {{ else }}
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+                {{ end }}
+            </div>
+        </div>
+    </header>
+    <main class="error container"
+        style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        {{if .Is405}}
+        <h1>405 - Method Not Allowed</h1>
+        {{else if .Is404}}
+        <h1>404 - Page Not Found</h1>
+        {{else if .Is500}}
+        <h1>500 - Internal Server Error</h1>
+        {{else if .Is403}}
+        <h1>403 - Access is forbidden</h1>
+        {{else if .Is400}}
+        <h1>400 - bad request</h1>
+        {{else if .Is401}}
+        <h1>400 - Unauthorized</h1>
+
+        {{end}}
+
+        <p>{{.Message}}</p>
+        <a href="/" class="button">Return Home</a>
+    </main>
+</body>
