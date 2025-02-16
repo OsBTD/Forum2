@@ -313,6 +313,13 @@ main {
   display: none;
 }
 
+.comment-reactions {
+  font-size: 12px;
+  color: #94a3b8;
+  gap: 1rem;
+
+}
+
 .show-more-comments {
   background: transparent;
   color: var(--primary);

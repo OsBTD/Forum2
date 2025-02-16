@@ -120,10 +120,6 @@ func fetchPosts(query string, args []interface{}) ([]Post, []int, error) {
 		} else {
 			post.Categories = []string{}
 		}
-
-		posts = append(posts, post)
-		postIDs = append(postIDs, post.ID)
-
 		posts = append(posts, post)
 		postIDs = append(postIDs, post.ID)
 	}
